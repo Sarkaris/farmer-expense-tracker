@@ -5,6 +5,7 @@ import { useTheme } from "./ThemeProvider";
 import { useDashboard } from "./DashboardProvider";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import LanguageToggle from "./LanguageToggle";
 
 export default function AppNavbar({ onToggleSidebar, pageTitle, pageDescription }) {
   const { theme, toggleTheme, mounted } = useTheme();
@@ -56,6 +57,9 @@ export default function AppNavbar({ onToggleSidebar, pageTitle, pageDescription 
             <span className="text-[10px] sm:text-xs font-medium text-emerald-700 dark:text-emerald-300">Demo Mode</span>
           </div>
         )}
+        <div className="hidden sm:block">
+          <LanguageToggle className="h-9 sm:h-10" />
+        </div>
         <button
           type="button"
           className="inline-flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-xl border surface-border text-heading transition hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"

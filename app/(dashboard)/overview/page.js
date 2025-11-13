@@ -3,6 +3,7 @@
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useDashboard } from "@/components/DashboardProvider";
+import { useI18n } from "@/lib/i18n";
 import SummaryCards from "@/components/SummaryCards";
 import DashboardCharts from "@/components/DashboardCharts";
 import FarmerPerformance from "@/components/FarmerPerformance";
@@ -10,6 +11,7 @@ import { NAV_ITEMS } from "@/components/AppSidebar";
 
 export default function OverviewPage() {
   const router = useRouter();
+  const { t } = useI18n();
   const {
     totals,
     cropSummaries,
@@ -75,16 +77,15 @@ export default function OverviewPage() {
         </div>
         <div className="card-surface h-full space-y-3 sm:space-y-4 p-3 sm:p-4 lg:p-6">
           <div>
-            <span className="tag w-fit uppercase tracking-[0.4em] text-xs mb-2 inline-block">AI highlight</span>
-            <p className="text-heading text-sm sm:text-base font-semibold mb-2">Based on your farm data analysis:</p>
+            <span className="tag w-fit uppercase tracking-[0.4em] text-xs mb-2 inline-block">{t("overview.aiHighlight")}</span>
+            <p className="text-heading text-sm sm:text-base font-semibold mb-2">{t("overview.basedOnData")}</p>
           </div>
           <p className="text-heading text-sm sm:text-base leading-relaxed">
             {insightsPreview ||
-              "Gemini will surface the most profitable crops and savings once you log profile, crop, expense, and yield details."}
+              t("overview.aiEmpty")}
           </p>
           <p className="text-xs sm:text-sm text-muted leading-relaxed">
-            Refresh insights whenever a big harvest, rainfall change, or new purchase happens. The
-            assistant blends your farm data with the weather outlook so you can plan ahead.
+            {t("overview.aiTip")}
           </p>
           <div className="flex flex-col sm:flex-row flex-wrap gap-2 sm:gap-3">
             <button
@@ -92,7 +93,7 @@ export default function OverviewPage() {
               className="secondary-button text-xs sm:text-sm px-3 sm:px-4 py-2 w-full sm:w-auto"
               onClick={() => router.push("/insights")}
             >
-              View full briefing
+              {t("overview.viewBriefing")}
             </button>
             <button
               type="button"
@@ -103,18 +104,18 @@ export default function OverviewPage() {
               {insightsLoading ? (
                 <span className="flex items-center justify-center gap-2">
                   <Loader2 className="h-4 w-4 animate-spin" />
-                  Refreshing…
+                  {t("overview.refreshing")}
                 </span>
               ) : (
-                "Refresh AI"
+                t("overview.refreshAI")
               )}
             </button>
           </div>
           {insightsNav ? (
             <p className="text-xs text-muted leading-relaxed">
-              Tip: Visit{" "}
-              <span className="font-semibold text-heading">{insightsNav.label}</span> for the full
-              Gemini report with weather and profitability context.
+              {t("overview.tipPrefix")}{" "}
+              <span className="font-semibold text-heading">{t(insightsNav.label)}</span>{" "}
+              {t("overview.tipSuffix")}
             </p>
           ) : null}
         </div>

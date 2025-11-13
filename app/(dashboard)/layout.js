@@ -5,6 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import AppNavbar from "@/components/AppNavbar";
 import AppSidebar, { NAV_ITEMS } from "@/components/AppSidebar";
 import { DashboardProvider } from "@/components/DashboardProvider";
+import { useI18n } from "@/lib/i18n";
 
 export default function DashboardLayout({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -12,6 +13,7 @@ export default function DashboardLayout({ children }) {
   const [isChecking, setIsChecking] = useState(true);
   const pathname = usePathname();
   const router = useRouter();
+  const { t } = useI18n();
 
   useEffect(() => {
     // Check authentication
@@ -58,8 +60,8 @@ export default function DashboardLayout({ children }) {
       <div className="app-shell">
         <AppNavbar
           onToggleSidebar={() => setSidebarOpen((open) => !open)}
-          pageTitle={activeNav?.label}
-          pageDescription={activeNav?.description}
+          pageTitle={activeNav ? t(activeNav.label) : undefined}
+          pageDescription={activeNav ? t(activeNav.description) : undefined}
         />
         <div className="flex min-h-0 flex-1 overflow-hidden">
           <AppSidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} activePath={pathname} />

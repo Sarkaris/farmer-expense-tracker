@@ -17,60 +17,62 @@ import { useEffect } from "react";
 import { useTheme } from "./ThemeProvider";
 import { useDashboard } from "./DashboardProvider";
 
+import { useI18n } from "@/lib/i18n";
+
 export const NAV_ITEMS = [
   {
     id: "weather",
-    label: "Weather & Conditions",
-    description: "Live weather, rainfall outlook, and field readiness.",
+    label: "nav.weather",
+    description: "nav.weatherDesc",
     icon: CloudSun,
     href: "/weather",
   },
   {
     id: "overview",
-    label: "Farm Overview",
-    description: "Profitability trends, AI highlights, and charts.",
+    label: "nav.overview",
+    description: "nav.overviewDesc",
     icon: LayoutDashboard,
     href: "/overview",
   },
   {
     id: "profile",
-    label: "Farmer Profile",
-    description: "Manage farmer contact info and farm location.",
+    label: "nav.profile",
+    description: "nav.profileDesc",
     icon: Sprout,
     href: "/profile",
   },
   {
     id: "crops",
-    label: "Crop Management",
-    description: "Plan seasons, acreage, and crop performance.",
+    label: "nav.crops",
+    description: "nav.cropsDesc",
     icon: Wheat,
     href: "/crops",
   },
   {
     id: "expenses",
-    label: "Expenses",
-    description: "Track costs and distribute shared inputs fairly.",
+    label: "nav.expenses",
+    description: "nav.expensesDesc",
     icon: Wallet,
     href: "/expenses",
   },
   {
     id: "yields",
-    label: "Yields",
-    description: "Record harvest output and revenue per crop.",
+    label: "nav.yields",
+    description: "nav.yieldsDesc",
     icon: FileSpreadsheet,
     href: "/yields",
   },
   {
     id: "insights",
-    label: "AI Insights",
-    description: "Gemini guidance for profitability and planning.",
+    label: "nav.insights",
+    description: "nav.insightsDesc",
     icon: BrainCircuit,
     href: "/insights",
   },
   {
     id: "market-prices",
-    label: "Market Prices",
-    description: "Live crop prices and market trends.",
+    label: "nav.market",
+    description: "nav.marketDesc",
     icon: TrendingUp,
     href: "/market-prices",
   },
@@ -79,6 +81,7 @@ export const NAV_ITEMS = [
 export default function AppSidebar({ open, onClose, activePath }) {
   const { theme } = useTheme();
   const { demoMode, enableDemoMode, disableDemoMode } = useDashboard();
+  const { t } = useI18n();
 
   useEffect(() => {
     if (!open) return;
@@ -101,7 +104,7 @@ export default function AppSidebar({ open, onClose, activePath }) {
         <div className="space-y-6 sm:space-y-8">
           <div className="flex items-center justify-between">
             <div className="min-w-0">
-              <p className="text-heading text-base sm:text-lg font-semibold truncate">Farm Expense HQ</p>
+              <p className="text-heading text-base sm:text-lg font-semibold truncate">{t("brand.name")}</p>
             </div>
             <button
               type="button"
@@ -128,7 +131,7 @@ export default function AppSidebar({ open, onClose, activePath }) {
                       onClick={onClose}
                     >
                       <Icon className="h-3.5 w-3.5 sm:h-4 sm:w-4 shrink-0" />
-                      <span className="truncate">{item.label}</span>
+                      <span className="truncate">{t(item.label)}</span>
                     </Link>
                   </li>
                 );
@@ -149,7 +152,7 @@ export default function AppSidebar({ open, onClose, activePath }) {
                   }`}
                 >
                   <Sparkles className="h-3.5 w-3.5 sm:h-4 sm:w-4 shrink-0" />
-                  <span className="truncate">{demoMode ? "Exit Demo" : "Demo Mode"}</span>
+                  <span className="truncate">{demoMode ? t("nav.exitDemo") : t("nav.demoMode")}</span>
                 </button>
               </li>
               
@@ -158,12 +161,12 @@ export default function AppSidebar({ open, onClose, activePath }) {
         </div>
 
         <div className="rounded-2xl border surface-border bg-[rgba(16,185,129,0.08)] p-3 sm:p-4">
-          <p className="text-xs sm:text-sm font-semibold text-heading">Need a quick overview?</p>
+          <p className="text-xs sm:text-sm font-semibold text-heading">{t("sidebar.quickTitle")}</p>
           <p className="mt-1 text-xs sm:text-sm text-muted">
-            Generate PDF or Excel reports to share summaries with your farm partners.
+            {t("sidebar.quickDesc")}
           </p>
           <div className="mt-3 sm:mt-4 flex items-center justify-between rounded-xl bg-white/60 px-2 sm:px-3 py-1.5 sm:py-2 text-[10px] sm:text-xs font-medium text-heading dark:bg-slate-900/50">
-            <span>Current theme</span>
+            <span>{t("sidebar.currentTheme")}</span>
             <span className="tag uppercase tracking-widest text-[10px] sm:text-xs">{theme}</span>
           </div>
         </div>

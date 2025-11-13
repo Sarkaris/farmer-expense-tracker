@@ -1,3 +1,4 @@
+'use client';
 import Link from "next/link";
 import {
   ArrowRight,
@@ -9,6 +10,9 @@ import {
   Users,
   Wallet,
 } from "lucide-react";
+import ThemeToggle from "@/components/ThemeToggle";
+import LanguageToggle from "@/components/LanguageToggle";
+import { useI18n } from "@/lib/i18n";
 
 const featureSections = [
   {
@@ -79,6 +83,7 @@ const workflow = [
 ];
 
 export default function Home() {
+  const { t } = useI18n();
   return (
     <div className="relative min-h-screen overflow-hidden bg-(--background) text-(--foreground)">
       <div className="pointer-events-none absolute inset-0 -z-10">
@@ -86,41 +91,46 @@ export default function Home() {
         <div className="absolute bottom-0 right-0 h-[420px] w-[420px] translate-x-1/3 translate-y-1/3 rounded-full bg-teal-400/10 blur-3xl" />
       </div>
 
-      <header className="sticky top-0 z-30 border-b border-(--border)/70 backdrop-blur-md bg-(--background)/85">
-        <div className="mx-auto flex max-w-6xl items-center justify-between gap-6 px-6 py-6">
-          <Link href="/" className="flex items-center gap-2 text-lg font-semibold tracking-tight">
-            <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-emerald-500/30 bg-emerald-500/10 text-emerald-500 shadow-sm">
-              <Sparkles className="h-5 w-5" />
-            </span>
-            QUANTQUEST Farm Expense HQ
+      <header className="sticky top-0 z-30 border-b border-(--border)/70 backdrop-blur-md bg-(--background)/90">
+        <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-4 sm:px-6 sm:py-5">
+          <Link
+            href="/"
+            className="flex h-10 w-10 items-center justify-center rounded-xl border border-emerald-500/30 bg-emerald-500/10 text-emerald-500 shadow-sm transition hover:border-emerald-500/60"
+            aria-label="QuantQuest Home"
+          >
+            <Sparkles className="h-5 w-5" />
           </Link>
 
-          <nav className="hidden items-center gap-8 text-sm font-medium text-(--muted-strong) md:flex">
+          <nav className="hidden items-center gap-7 text-sm font-medium text-(--muted-strong) md:flex">
             <a href="#features" className="transition hover:text-emerald-500">
-              Features
+              {t("nav.features")}
             </a>
             <a href="#workflow" className="transition hover:text-emerald-500">
-              How it works
+              {t("nav.howItWorks")}
             </a>
             <a href="#benefits" className="transition hover:text-emerald-500">
-              Why choose us
+              {t("nav.whyUs")}
             </a>
           </nav>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
+            <ThemeToggle className="hidden sm:inline-flex" />
+            <LanguageToggle className="hidden md:inline-flex" />
             <Link
               href="/login"
-              className="rounded-xl border border-(--border) px-4 py-2 text-sm font-semibold text-(--muted-strong) transition hover:border-emerald-500/60 hover:text-emerald-500"
+              className="inline-flex items-center justify-center rounded-xl border border-(--border) px-4 py-2 text-sm font-semibold text-(--muted-strong) transition hover:border-emerald-500/60 hover:text-emerald-500 sm:px-3 sm:py-2"
             >
-              Log in
+              {t("nav.login")}
             </Link>
             <Link
               href="/register"
-              className="inline-flex items-center gap-2 rounded-xl bg-emerald-500 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-emerald-500/25 transition hover:bg-emerald-600"
+              className="inline-flex items-center gap-2 rounded-xl bg-emerald-500 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-emerald-500/20 transition hover:bg-emerald-600"
             >
-              Start free trial
+              {t("nav.startTrial")}
               <ArrowRight className="h-4 w-4" />
             </Link>
+            <ThemeToggle className="sm:hidden" />
+            <LanguageToggle className="md:hidden" />
           </div>
         </div>
       </header>
@@ -131,38 +141,37 @@ export default function Home() {
             <div className="w-full space-y-6 text-center lg:w-[52%] lg:text-left">
               <div className="mx-auto inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-emerald-500 sm:text-sm lg:mx-0">
                 <ShieldCheck className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                Trusted Farm Finance Intelligence
+                {t("hero.badge")}
               </div>
               <h1 className="mx-auto max-w-2xl text-3xl font-semibold leading-tight tracking-tight text-(--foreground) sm:text-4xl md:text-[2.75rem] md:leading-[1.15] lg:mx-0">
-                One command center for farm expenses, yields, and AI-powered insight.
+                {t("hero.title")}
               </h1>
               <p className="mx-auto max-w-xl text-base leading-relaxed text-(--muted-strong) sm:text-lg sm:leading-[1.6] lg:mx-0">
-                QuantQuest Farm Expense HQ keeps your teams in sync and decisions grounded in real-time crop, weather,
-                and financial intelligence—all in a single, ergonomic workspace designed for busy agribusiness leaders.
+                {t("hero.subtitle")}
               </p>
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-center sm:gap-4 lg:justify-start">
                 <Link
                   href="/register"
                   className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-500 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-emerald-500/20 transition hover:bg-emerald-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/40 focus-visible:ring-offset-2 sm:w-auto"
                 >
-                  Launch your HQ
+                  {t("hero.launch")}
                   <ArrowRight className="h-4 w-4" />
                 </Link>
                 <Link
                   href="#features"
                   className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-transparent px-4 py-3 text-sm font-semibold text-emerald-500 transition hover:text-emerald-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/30 focus-visible:ring-offset-2 sm:w-auto"
                 >
-                  Explore capabilities
+                  {t("hero.explore")}
                 </Link>
               </div>
               <div className="mx-auto flex flex-col gap-3 text-sm text-(--muted-strong) sm:flex-row sm:items-center sm:justify-center sm:gap-6 lg:mx-0 lg:justify-start">
                 <div className="flex items-center justify-center gap-2 lg:justify-start">
                   <ShieldCheck className="h-4 w-4 text-emerald-500" />
-                  Bank-grade security & role-based access
+                  {t("hero.security")}
                 </div>
                 <div className="flex items-center justify-center gap-2 lg:justify-start">
                   <Workflow className="h-4 w-4 text-emerald-500" />
-                  AI copilots trained on agronomy & finance
+                  {t("hero.copilots")}
                 </div>
               </div>
             </div>
@@ -171,7 +180,7 @@ export default function Home() {
               <div className="relative h-full rounded-[24px] border border-(--border) bg-(--card)/95 p-5 shadow-xl sm:p-6">
                 <div className="absolute -inset-4 hidden rounded-[28px] bg-linear-to-br from-emerald-500/20 via-transparent to-transparent blur-2xl sm:block" />
                 <div className="relative grid gap-4 sm:grid-cols-2">
-                  <div className="rounded-2xl border border-(--border) bg-white/70 p-4 shadow-sm sm:p-5">
+                  <div className="rounded-2xl border border-(--border) bg-(--card) p-4 shadow-sm backdrop-blur sm:p-5">
                     <div className="flex items-center justify-between">
                       <p className="text-xs font-medium text-(--muted) sm:text-sm">Projected Seasonal Margin</p>
                       <span className="rounded-lg bg-emerald-500/10 px-2 py-1 text-xs font-semibold text-emerald-500">
@@ -181,7 +190,7 @@ export default function Home() {
                     <p className="mt-3 text-2xl font-semibold text-(--foreground) sm:text-3xl">₹48,50,000</p>
                     <p className="text-xs text-(--muted)">Across integrated agronomy programs</p>
                   </div>
-                  <div className="rounded-2xl border border-(--border) bg-white/70 p-4 shadow-sm sm:p-5">
+                  <div className="rounded-2xl border border-(--border) bg-(--card) p-4 shadow-sm backdrop-blur sm:p-5">
                     <div className="flex items-center justify-between">
                       <p className="text-xs font-medium text-(--muted) sm:text-sm">Expense Efficiency</p>
                       <Sparkles className="h-4 w-4 text-emerald-500" />
@@ -189,7 +198,7 @@ export default function Home() {
                     <p className="mt-3 text-2xl font-semibold text-(--foreground) sm:text-3xl">72%</p>
                     <p className="text-xs text-(--muted)">Benchmarked vs. top-performing farms</p>
                   </div>
-                  <div className="rounded-2xl border border-(--border) bg-white/70 p-4 shadow-sm sm:p-5">
+                  <div className="rounded-2xl border border-(--border) bg-(--card) p-4 shadow-sm backdrop-blur sm:p-5">
                     <div className="flex items-center justify-between">
                       <p className="text-xs font-medium text-(--muted) sm:text-sm">Risk Alerts</p>
                       <ShieldCheck className="h-4 w-4 text-emerald-500" />
@@ -197,12 +206,12 @@ export default function Home() {
                     <p className="mt-3 text-2xl font-semibold text-(--foreground) sm:text-3xl">3 active</p>
                     <p className="text-xs text-(--muted)">Rainfall & humidity watch for maize</p>
                   </div>
-                  <div className="rounded-2xl border border-(--border) bg-white/70 p-4 shadow-sm sm:p-5">
+                  <div className="rounded-2xl border border-(--border) bg-(--card) p-4 shadow-sm backdrop-blur sm:p-5">
                     <div className="flex items-center justify-between">
                       <p className="text-xs font-medium text-(--muted) sm:text-sm">Team Alignment</p>
                       <Users className="h-4 w-4 text-emerald-500" />
                     </div>
-                    <p className="mt-3 text-2xl font-semibold text-(--foreground) sm:text-3xl">24 members</p>
+                    <p className="mt-3 text-2xl font-semibold text-(--foreground) sm:text-3xl">3 members</p>
                     <p className="text-xs text-(--muted)">Operations, finance, and agronomy synced</p>
                   </div>
                 </div>
@@ -217,7 +226,7 @@ export default function Home() {
               {metrics.map((metric) => (
                 <div
                   key={metric.label}
-                  className="rounded-3xl border border-(--border) bg-white/70 p-8 text-center shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
+                  className="rounded-3xl border border-(--border) bg-(--card) p-8 text-center shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
                 >
                   <p className="text-sm font-semibold uppercase tracking-wide text-emerald-500">
                     {metric.label}

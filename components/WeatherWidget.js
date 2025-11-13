@@ -2,6 +2,7 @@
 
 import { Droplets, Sun, CloudRain, Wind, Cloud, CloudSnow, CloudLightning, Eye, Loader2 } from "lucide-react";
 import React from "react";
+import { useI18n } from "@/lib/i18n";
 
 const icons = {
   clear: Sun,
@@ -27,13 +28,14 @@ function WeatherIconDisplay({ description, size = "h-16 w-16" }) {
 }
 
 export default function WeatherWidget({ current, forecast, loading = false }) {
+  const { t } = useI18n();
   // Show loading state
   if (loading) {
     return (
       <div className="card-surface space-y-4 p-6 rounded-2xl border surface-border shadow-sm">
         <div className="flex items-center justify-center gap-3 py-8">
           <Loader2 className="h-6 w-6 animate-spin text-accent" />
-          <p className="text-heading text-sm font-medium">Loading weather data...</p>
+          <p className="text-heading text-sm font-medium">{t("weather.loading")}</p>
         </div>
       </div>
     );
@@ -48,23 +50,23 @@ export default function WeatherWidget({ current, forecast, loading = false }) {
             <Sun className="h-6 w-6 text-muted" />
           </div>
           <div>
-            <h3 className="text-heading text-lg font-semibold">Weather Data</h3>
-            <p className="text-xs text-muted">No weather information available</p>
+            <h3 className="text-heading text-lg font-semibold">{t("weather.widgetTitle")}</h3>
+            <p className="text-xs text-muted">{t("weather.noData")}</p>
           </div>
         </div>
         <div className="space-y-2 text-sm text-muted">
           <p>
-            Weather data will appear once you save a profile with a valid 6-digit pincode and configure your OPENWEATHER_API_KEY in .env.local.
+            {t("weather.hint")}
           </p>
           <p className="text-xs">
-            Get your free API key from{" "}
+            {t("weather.getKey")}{" "}
             <a
               href="https://openweathermap.org/api"
               target="_blank"
               rel="noopener noreferrer"
               className="text-accent underline hover:text-accent-hover"
             >
-              openweathermap.org
+              {t("weather.openWeather")}
             </a>
           </p>
         </div>
@@ -82,7 +84,7 @@ export default function WeatherWidget({ current, forecast, loading = false }) {
         <div className="p-4 sm:p-6" style={{ background: 'linear-gradient(135deg, rgba(4, 120, 87, 0.1) 0%, rgba(4, 120, 87, 0.05) 50%, transparent 100%)' }}>
           <div className="flex flex-col sm:flex-row items-start justify-between mb-4 gap-4">
             <div className="flex-1 min-w-0">
-              <p className="text-xs uppercase tracking-widest text-muted mb-1">Current Weather</p>
+              <p className="text-xs uppercase tracking-widest text-muted mb-1">{t("weather.current")}</p>
               <h3 className="text-heading text-xl sm:text-2xl font-bold mb-1 truncate">{current.location || 'Unknown Location'}</h3>
               <p className="text-sm capitalize text-muted">{current.description || 'Clear sky'}</p>
             </div>
@@ -100,14 +102,14 @@ export default function WeatherWidget({ current, forecast, loading = false }) {
           <div className="rounded-xl p-4 border surface-border" style={{ background: 'var(--card)' }}>
             <div className="flex items-center gap-2 mb-2">
               <Droplets className="h-5 w-5 text-accent" />
-              <p className="text-xs uppercase tracking-widest text-muted">Humidity</p>
+              <p className="text-xs uppercase tracking-widest text-muted">{t("weather.humidity")}</p>
             </div>
             <p className="text-heading text-xl sm:text-2xl font-bold">{current.humidity ?? '--'}%</p>
           </div>
           <div className="rounded-xl p-4 border surface-border" style={{ background: 'var(--card)' }}>
             <div className="flex items-center gap-2 mb-2">
               <CloudRain className="h-5 w-5 text-accent" />
-              <p className="text-xs uppercase tracking-widest text-muted">Next 24h</p>
+              <p className="text-xs uppercase tracking-widest text-muted">{t("weather.next24h")}</p>
             </div>
             <p className="text-heading text-xl sm:text-2xl font-bold">
               {nextDayRainfall > 0 ? `${nextDayRainfall.toFixed(1)} mm` : "0 mm"}
@@ -121,7 +123,7 @@ export default function WeatherWidget({ current, forecast, loading = false }) {
         <div className="card-surface rounded-2xl border surface-border shadow-sm p-4 sm:p-6">
           <div className="flex items-center gap-2 mb-4">
             <Eye className="h-5 w-5 text-accent" />
-            <h3 className="text-heading text-base sm:text-lg font-semibold">7-Day Forecast</h3>
+            <h3 className="text-heading text-base sm:text-lg font-semibold">{t("weather.sevenDay")}</h3>
           </div>
           <div className="space-y-2 sm:space-y-3">
             {safeForecast.slice(0, 7).map((day, index) => {

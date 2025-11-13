@@ -15,6 +15,8 @@ import JSZip from "jszip";
 
 export const runtime = "nodejs";
 
+const formatCurrency = (value) => `INR ${Number(value || 0).toFixed(2)}`;
+
 function ensureNodeCanvas() {
   if (typeof global.window === "undefined") {
     global.window = {
@@ -54,7 +56,7 @@ function buildExpenseRow(expense, crops) {
   
   const sharedDetails = expense.distributedShares?.length
     ? expense.distributedShares
-        .map((share) => `${cropName(share.cropId)}: ₹${Number(share.share || 0).toFixed(2)}`)
+        .map((share) => `${cropName(share.cropId)}: ${formatCurrency(share.share)}`)
         .join("; ")
     : "-";
   
@@ -62,7 +64,7 @@ function buildExpenseRow(expense, crops) {
   return [
     expense.date ? new Date(expense.date).toLocaleDateString("en-IN") : "-",
     String(expense.type || "-"),
-    `₹${Number(expense.amount || 0).toFixed(2)}`,
+    formatCurrency(expense.amount),
     expense.shared ? "Yes" : "No",
     expense.shared ? String(sharedDetails) : String(cropName(expense.cropId)),
     String(expense.description || "-"),
@@ -86,11 +88,11 @@ async function buildPdf({ user, crops, cropSummaries, totals, expenses, yields, 
 
     autoTable(doc, {
       startY: topMargin + 36,
-      head: [["Metric", "Amount (₹)"]],
+      head: [["Metric", "Amount (INR)"]],
       body: [
-        ["Total Expense", totals.expense.toFixed(2)],
-        ["Total Revenue", totals.revenue.toFixed(2)],
-        ["Net Profit", totals.profit.toFixed(2)],
+        ["Total Expense", formatCurrency(totals.expense)],
+        ["Total Revenue", formatCurrency(totals.revenue)],
+        ["Net Profit", formatCurrency(totals.profit)],
       ],
       theme: "grid",
       styles: { fontSize: 10 },
@@ -99,13 +101,13 @@ async function buildPdf({ user, crops, cropSummaries, totals, expenses, yields, 
 
     autoTable(doc, {
       startY: doc.lastAutoTable.finalY + 10,
-      head: [["Crop", "Area (acres)", "Expense (₹)", "Revenue (₹)", "Profit (₹)"]],
+      head: [["Crop", "Area (acres)", "Expense (INR)", "Revenue (INR)", "Profit (INR)"]],
       body: cropSummaries.map((crop) => [
         crop.name,
         crop.area,
-        crop.expense.toFixed(2),
-        crop.revenue.toFixed(2),
-        crop.profit.toFixed(2),
+        formatCurrency(crop.expense),
+        formatCurrency(crop.revenue),
+        formatCurrency(crop.profit),
       ]),
       theme: "grid",
       styles: { fontSize: 9 },
@@ -131,7 +133,7 @@ async function buildPdf({ user, crops, cropSummaries, totals, expenses, yields, 
           "N/A",
         entry.totalYield,
         entry.pricePerUnit,
-        (Number(entry.totalYield || 0) * Number(entry.pricePerUnit || 0)).toFixed(2),
+        formatCurrency(Number(entry.totalYield || 0) * Number(entry.pricePerUnit || 0)),
       ]),
       styles: { fontSize: 8 },
       headStyles: { fillColor: [59, 130, 246] },
@@ -169,33 +171,33 @@ function buildWorkbook({ user, crops, cropSummaries, totals, expenses, yields, i
     ["Pincode", user.pincode],
     ["Farm Size (acres)", user.farmSize],
     [],
-    ["Metric", "Amount (₹)"],
-    ["Total Expense", totals.expense.toFixed(2)],
-    ["Total Revenue", totals.revenue.toFixed(2)],
-    ["Net Profit", totals.profit.toFixed(2)],
+    ["Metric", "Amount (INR)"],
+    ["Total Expense", formatCurrency(totals.expense)],
+    ["Total Revenue", formatCurrency(totals.revenue)],
+    ["Net Profit", formatCurrency(totals.profit)],
   ]);
   XLSX.utils.book_append_sheet(workbook, summarySheet, "Summary");
 
   const cropSheet = XLSX.utils.aoa_to_sheet([
-    ["Crop", "Area (acres)", "Expense (₹)", "Revenue (₹)", "Profit (₹)"],
+    ["Crop", "Area (acres)", "Expense (INR)", "Revenue (INR)", "Profit (INR)"],
     ...cropSummaries.map((crop) => [
       crop.name,
       crop.area,
-      crop.expense.toFixed(2),
-      crop.revenue.toFixed(2),
-      crop.profit.toFixed(2),
+      formatCurrency(crop.expense),
+      formatCurrency(crop.revenue),
+      formatCurrency(crop.profit),
     ]),
   ]);
   XLSX.utils.book_append_sheet(workbook, cropSheet, "Crops");
 
   const expenseSheet = XLSX.utils.aoa_to_sheet([
-    ["Date", "Type", "Amount (₹)", "Shared", "Details", "Notes"],
+    ["Date", "Type", "Amount (INR)", "Shared", "Details", "Notes"],
     ...expenses.map((expense) => buildExpenseRow(expense, crops)),
   ]);
   XLSX.utils.book_append_sheet(workbook, expenseSheet, "Expenses");
 
   const yieldSheet = XLSX.utils.aoa_to_sheet([
-    ["Date", "Crop", "Yield", "Price/Unit (₹)", "Revenue (₹)"],
+    ["Date", "Crop", "Yield", "Price/Unit (INR)", "Revenue (INR)"],
     ...yields.map((entry) => [
       new Date(entry.date).toLocaleDateString("en-IN"),
       crops.find((c) => c._id.toString() === entry.cropId.toString())?.name ||
@@ -203,7 +205,7 @@ function buildWorkbook({ user, crops, cropSummaries, totals, expenses, yields, i
         "N/A",
       entry.totalYield,
       entry.pricePerUnit,
-      (Number(entry.totalYield || 0) * Number(entry.pricePerUnit || 0)).toFixed(2),
+      formatCurrency(Number(entry.totalYield || 0) * Number(entry.pricePerUnit || 0)),
     ]),
   ]);
   XLSX.utils.book_append_sheet(workbook, yieldSheet, "Yields");
