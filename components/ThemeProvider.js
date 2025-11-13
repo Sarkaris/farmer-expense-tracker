@@ -20,6 +20,11 @@ export function ThemeProvider({ children, defaultTheme = "light" }) {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    if (typeof window === "undefined") {
+      setMounted(true);
+      return;
+    }
+    
     const storedTheme = window.localStorage.getItem("farm-theme");
     if (storedTheme === "light" || storedTheme === "dark") {
       setTheme(storedTheme);
@@ -31,7 +36,7 @@ export function ThemeProvider({ children, defaultTheme = "light" }) {
   }, [defaultTheme]);
 
   useEffect(() => {
-    if (!mounted) return;
+    if (!mounted || typeof window === "undefined" || typeof document === "undefined") return;
     document.documentElement.setAttribute("data-theme", theme);
     window.localStorage.setItem("farm-theme", theme);
   }, [theme, mounted]);

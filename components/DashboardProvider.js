@@ -324,6 +324,11 @@ export function DashboardProvider({ children }) {
       const blob = await response.blob();
       const contentType = response.headers.get("Content-Type") || "";
       const extension = contentType.includes("application/pdf") ? "pdf" : "zip";
+      
+      if (typeof window === "undefined" || typeof document === "undefined") {
+        throw new Error("Browser environment required");
+      }
+      
       const urlObj = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = urlObj;

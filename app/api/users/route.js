@@ -92,6 +92,22 @@ export async function POST(request) {
     return NextResponse.json(userWithoutPassword, { status: 201 });
   } catch (error) {
     console.error("POST /api/users error", error);
+    
+    // Handle duplicate key errors more gracefully
+    if (error.code === 11000) {
+      const field = Object.keys(error.keyPattern || {})[0] || 'field';
+      if (field === 'username') {
+        return NextResponse.json(
+          { message: "Database configuration error. Please contact support or run the fix script." },
+          { status: 500 }
+        );
+      }
+      return NextResponse.json(
+        { message: `User with this ${field} already exists` },
+        { status: 400 }
+      );
+    }
+    
     return NextResponse.json(
       { message: error.message || "Unable to create user" },
       { status: 500 }
