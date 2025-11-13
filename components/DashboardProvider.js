@@ -58,7 +58,14 @@ async function fetchJSON(url, options = {}) {
 const DashboardContext = createContext(null);
 
 export function DashboardProvider({ children }) {
-  const [demoMode, setDemoMode] = useState(false); // Demo mode off by default
+  // Persist demo mode in localStorage
+  const [demoMode, setDemoMode] = useState(() => {
+    if (typeof window !== "undefined") {
+      const stored = window.localStorage.getItem("farm-demo-mode");
+      return stored === "true";
+    }
+    return false;
+  }); // Demo mode off by default
   const [user, setUser] = useState(null);
   const [crops, setCrops] = useState([]);
   const [expenses, setExpenses] = useState([]);
@@ -77,26 +84,46 @@ export function DashboardProvider({ children }) {
   const [reportLoading, setReportLoading] = useState(false);
 
   const loadInsights = useCallback(async (userId, { silent = false } = {}) => {
-    if (!userId) return;
+    if (!userId) {
+      if (!silent) {
+        setError("Please log in to generate insights.");
+      }
+      return;
+    }
+    
+    console.log("🔄 Starting to load insights for user:", userId);
     setInsightsLoading(true);
+    if (!silent) {
+      setError(""); // Clear previous errors
+    }
+    
     try {
+      console.log("📡 Calling /api/insights endpoint...");
       const data = await fetchJSON("/api/insights", {
         method: "POST",
         body: JSON.stringify({ userId }),
       });
+      
+      console.log("✅ Insights received:", data.insights ? "Yes" : "No");
       setInsights(data.insights || "");
       if (data.cropSummaries) setCropSummaries(data.cropSummaries);
       if (data.totals) setTotals(data.totals);
       if (data.weather) setWeather(data.weather);
       if (data.forecast) setForecast(data.forecast);
-      if (!silent) setError("");
-    } catch (err) {
-      console.error(err);
       if (!silent) {
-        setError(err.message || "Gemini could not produce insights right now.");
+        setError("");
+      }
+    } catch (err) {
+      console.error("❌ Load insights error:", err);
+      if (!silent) {
+        const errorMessage = err.message || "Unable to generate insights. Please check your API key and try again.";
+        setError(errorMessage);
+        // Also update insights with error message so user sees it
+        setInsights(`Error: ${errorMessage}\n\nPlease ensure:\n1. GEMINI_API_KEY is set in your .env.local file\n2. Get your API key from: https://aistudio.google.com/app/api-keys\n3. The API key is valid\n4. You have internet connection\n5. Restart your dev server after adding the API key`);
       }
     } finally {
       setInsightsLoading(false);
+      console.log("🏁 Finished loading insights");
     }
   }, []);
 
@@ -150,6 +177,9 @@ export function DashboardProvider({ children }) {
 
   const enableDemoMode = useCallback(() => {
     setDemoMode(true);
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem("farm-demo-mode", "true");
+    }
     setUser(DEMO_USER);
     setCrops(DEMO_CROPS);
     setExpenses(DEMO_EXPENSES);
@@ -165,6 +195,9 @@ export function DashboardProvider({ children }) {
 
   const disableDemoMode = useCallback(async () => {
     setDemoMode(false);
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem("farm-demo-mode", "false");
+    }
     setUser(null);
     setCrops([]);
     setExpenses([]);
@@ -192,9 +225,10 @@ export function DashboardProvider({ children }) {
     }
   }, [loadSummary, loadWeather]);
 
-  // Initialize demo mode on mount
+  // Initialize demo mode on mount and when demoMode changes
   useEffect(() => {
     if (demoMode) {
+      // Always set demo data when in demo mode, regardless of navigation
       setUser(DEMO_USER);
       setCrops(DEMO_CROPS);
       setExpenses(DEMO_EXPENSES);
@@ -209,6 +243,7 @@ export function DashboardProvider({ children }) {
       return;
     }
     
+    // Only load real data if not in demo mode
     async function bootstrap() {
       try {
         // Get authenticated user
@@ -229,7 +264,8 @@ export function DashboardProvider({ children }) {
     }
 
     bootstrap();
-  }, [loadSummary, loadWeather, demoMode]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [demoMode]); // Only re-run when demoMode changes to prevent resetting data on navigation
 
   const handleSaveUser = useCallback(
     async (payload) => {

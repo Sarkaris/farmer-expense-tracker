@@ -10,13 +10,17 @@ import { getAuthenticatedUser } from "@/lib/auth";
 
 export async function POST(request) {
   try {
+    console.log("📥 POST /api/insights - Request received");
     const currentUser = await getAuthenticatedUser();
     if (!currentUser) {
+      console.log("❌ Unauthorized - No current user");
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
+    console.log("🔌 Connecting to database...");
     await connectDB();
     const userId = currentUser._id.toString();
+    console.log("👤 Processing insights for user:", userId);
 
     const user = await User.findById(userId);
     if (!user) {
@@ -95,8 +99,19 @@ Provide concise, actionable insights (3-4 paragraphs) focusing on:
 
 Keep the tone professional but accessible for farmers.`;
 
-    const insights = await getGeminiInsights(prompt);
+    let insights;
+    try {
+      console.log("🤖 Calling Gemini AI...");
+      console.log("🔑 API Key present:", !!process.env.GEMINI_API_KEY);
+      insights = await getGeminiInsights(prompt);
+      console.log("✅ Gemini AI response received, length:", insights?.length || 0);
+    } catch (aiError) {
+      console.error("❌ Gemini API error:", aiError);
+      const hasApiKey = !!process.env.GEMINI_API_KEY;
+      insights = `Unable to connect to Gemini AI. Error: ${aiError.message}\n\nPlease check:\n1. GEMINI_API_KEY is set in .env.local (${hasApiKey ? '✅ Found' : '❌ Missing'})\n2. Get your API key from: https://aistudio.google.com/app/api-keys\n3. The API key is valid\n4. You have internet connection\n5. Restart your dev server after adding the API key\n\nFalling back to default insights...`;
+    }
 
+    console.log("📤 Sending response with insights");
     return NextResponse.json({
       insights,
       cropSummaries,
@@ -105,7 +120,10 @@ Keep the tone professional but accessible for farmers.`;
   } catch (error) {
     console.error("POST /api/insights error", error);
     return NextResponse.json(
-      { message: error.message || "Unable to generate insights" },
+      { 
+        message: error.message || "Unable to generate insights",
+        insights: `Error generating insights: ${error.message}. Please check your configuration.`
+      },
       { status: 500 }
     );
   }

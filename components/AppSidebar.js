@@ -101,7 +101,6 @@ export default function AppSidebar({ open, onClose, activePath }) {
         <div className="space-y-6 sm:space-y-8">
           <div className="flex items-center justify-between">
             <div className="min-w-0">
-              <span className="text-[10px] sm:text-xs uppercase tracking-[0.4em] text-muted">QuantQuest</span>
               <p className="text-heading text-base sm:text-lg font-semibold truncate">Farm Expense HQ</p>
             </div>
             <button

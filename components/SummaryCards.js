@@ -28,17 +28,17 @@ const cards = [
 
 export default function SummaryCards({ totals }) {
   return (
-    <div className="grid gap-4 md:grid-cols-3">
+    <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
       {cards.map(({ key, label, icon: Icon, badgeClass, valueKey }) => (
-        <div key={key} className="card-surface space-y-3 p-5">
-          <div className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold ${badgeClass}`}>
-            <Icon className="h-4 w-4" />
-            {label}
+        <div key={key} className="card-surface space-y-2 sm:space-y-3 p-4 sm:p-5 lg:p-6 transition-all duration-300 hover:scale-[1.02]">
+          <div className={`inline-flex items-center gap-2 rounded-full px-2.5 sm:px-3 py-1 sm:py-1.5 text-xs font-semibold ${badgeClass}`}>
+            <Icon className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+            <span className="whitespace-nowrap">{label}</span>
           </div>
-          <p className="text-heading text-3xl font-semibold">
+          <p className="text-heading text-xl sm:text-2xl lg:text-3xl font-bold">
             ₹{(totals?.[valueKey] || 0).toLocaleString("en-IN", { maximumFractionDigits: 2 })}
           </p>
-          <p className="text-xs text-muted">
+          <p className="text-xs sm:text-sm text-muted leading-relaxed">
             {valueKey === "profit"
               ? "Revenue minus expenses across all crops"
               : `Aggregated ${valueKey} across your farm`}

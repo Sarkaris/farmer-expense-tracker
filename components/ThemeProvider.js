@@ -29,8 +29,8 @@ export function ThemeProvider({ children, defaultTheme = "light" }) {
     if (storedTheme === "light" || storedTheme === "dark") {
       setTheme(storedTheme);
     } else {
-      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-      setTheme(prefersDark ? "dark" : defaultTheme);
+      // Always default to light mode
+      setTheme("light");
     }
     setMounted(true);
   }, [defaultTheme]);

@@ -39,12 +39,12 @@ export default function AppNavbar({ onToggleSidebar, pageTitle, pageDescription 
           <Menu className="h-4 w-4 sm:h-5 sm:w-5" />
         </button>
         <div className="min-w-0 flex-1">
-          <p className="text-[10px] sm:text-xs uppercase tracking-[0.3em] text-muted truncate">Farm Expense Tracker</p>
+          <p className="text-[10px] sm:text-xs uppercase tracking-[0.3em] text-muted truncate">QUANTQUEST</p>
           <h1 className="text-heading text-base sm:text-lg font-semibold lg:text-xl truncate">
-            {pageTitle || "Smarter farming made simple"}
+            {pageTitle || "Farm Expense HQ"}
           </h1>
           <p className="mt-1 hidden text-xs text-muted sm:block truncate">
-            {pageDescription || "Track costs, plan harvests, and guide decisions with AI."}
+            {pageDescription || "Profitability trends, AI highlights, and charts."}
           </p>
         </div>
       </div>
