@@ -1,26 +1,245 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  color-scheme: light;
+  --background: #f8fafc;
+  --foreground: #0f172a;
+  --muted: #64748b;
+  --muted-strong: #475569;
+  --border: #e2e8f0;
+  --card: #ffffff;
+  --card-border: #e2e8f0;
+  --card-shadow: 0 20px 45px -20px rgba(15, 23, 42, 0.25);
+  --accent: #047857;
+  --accent-hover: #059669;
+  --accent-foreground: #ecfdf5;
+  --navbar: rgba(255, 255, 255, 0.95);
+  --sidebar: rgba(255, 255, 255, 0.92);
+  --sidebar-border: rgba(226, 232, 240, 0.8);
+  --chip-bg: rgba(15, 23, 42, 0.04);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+[data-theme="dark"] {
+  color-scheme: dark;
+  --background: #0f172a;
+  --foreground: #e2e8f0;
+  --muted: #94a3b8;
+  --muted-strong: #cbd5f5;
+  --border: rgba(148, 163, 184, 0.35);
+  --card: rgba(15, 23, 42, 0.9);
+  --card-border: rgba(148, 163, 184, 0.3);
+  --card-shadow: 0 25px 40px -20px rgba(15, 23, 42, 0.7);
+  --accent: #34d399;
+  --accent-hover: #22c55e;
+  --accent-foreground: #022c22;
+  --navbar: rgba(15, 23, 42, 0.85);
+  --sidebar: rgba(15, 23, 42, 0.92);
+  --sidebar-border: rgba(148, 163, 184, 0.2);
+  --chip-bg: rgba(148, 163, 184, 0.08);
 }
 
 body {
+  @apply min-h-screen text-base transition-colors duration-300 ease-out;
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI";
+}
+
+::selection {
+  background: rgba(16, 185, 129, 0.35);
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+/* Hide scrollbar for Firefox */
+* {
+  scrollbar-width: none;
+}
+
+/* Hide scrollbar for IE and Edge */
+* {
+  -ms-overflow-style: none;
+}
+
+html, body {
+  overflow: -moz-scrollbars-none;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+html::-webkit-scrollbar, body::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+.app-shell {
+  @apply flex min-h-screen flex-col bg-transparent;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.navbar {
+  background: var(--navbar);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+}
+
+.sidebar {
+  background: var(--sidebar);
+  backdrop-filter: blur(18px);
+  border-right: 1px solid var(--sidebar-border);
+  height: 100vh;
+  overflow-y: auto;
+}
+
+@media (min-width: 1024px) {
+  .sidebar {
+    height: calc(100vh - 64px);
+    overflow-y: auto;
+    position: relative;
+  }
+}
+
+.card-surface {
+  border: 1px solid var(--card-border);
+  background: var(--card);
+  border-radius: 1.25rem;
+  box-shadow: var(--card-shadow);
+}
+
+.chip {
+  background: var(--chip-bg);
+  color: var(--muted-strong);
+}
+
+.form-input {
+  @apply w-full rounded-xl px-4 py-2 text-sm transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2;
+  background: var(--card);
+  border: 1px solid var(--border);
+  color: var(--foreground);
+  box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+
+.form-input::placeholder {
+  color: var(--muted);
+}
+
+.form-input:focus-visible {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15);
+}
+
+.primary-button {
+  @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2 text-sm font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2;
+  background: var(--accent);
+  color: var(--accent-foreground);
+}
+
+.primary-button:hover {
+  background: var(--accent-hover);
+}
+
+.secondary-button {
+  @apply inline-flex items-center justify-center gap-2 rounded-xl border px-4 py-2 text-sm font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2;
+  border-color: var(--border);
+  color: var(--foreground);
+  background: transparent;
+}
+
+.secondary-button:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.text-heading {
+  color: var(--foreground);
+}
+
+.text-muted {
+  color: var(--muted);
+}
+
+.text-accent {
+  color: var(--accent);
+}
+
+.tag {
+  @apply rounded-full px-3 py-1 text-xs font-medium;
+  background: var(--chip-bg);
+  color: var(--muted-strong);
+}
+
+.nav-link {
+  color: var(--muted);
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.nav-link:hover {
+  background: var(--chip-bg);
+  color: var(--foreground);
+}
+
+.nav-link[data-active="true"] {
+  background: rgba(16, 185, 129, 0.16);
+  color: var(--foreground);
+}
+
+[data-theme="dark"] .nav-link[data-active="true"] {
+  background: rgba(52, 211, 153, 0.12);
+}
+
+.badge-expense {
+  background: rgba(244, 63, 94, 0.15);
+  color: #b91c1c;
+}
+
+.badge-revenue {
+  background: rgba(16, 185, 129, 0.18);
+  color: #065f46;
+}
+
+.badge-profit {
+  background: rgba(14, 165, 233, 0.15);
+  color: #0369a1;
+}
+
+[data-theme="dark"] .badge-expense {
+  color: #fecdd3;
+}
+
+[data-theme="dark"] .badge-revenue {
+  color: #bbf7d0;
+}
+
+[data-theme="dark"] .badge-profit {
+  color: #bae6fd;
+}
+
+.alert-error {
+  border: 1px solid rgba(248, 113, 113, 0.4);
+  background: rgba(248, 113, 113, 0.1);
+  color: #9f1239;
+  border-radius: 1rem;
+  padding: 1rem 1.25rem;
+  font-size: 0.95rem;
+}
+
+[data-theme="dark"] .alert-error {
+  border-color: rgba(248, 113, 113, 0.3);
+  background: rgba(248, 113, 113, 0.12);
+  color: #fecdd3;
+}
+
+.surface-border {
+  border-color: var(--border);
+}
+
+.shadow-soft {
+  box-shadow: var(--card-shadow);
 }
